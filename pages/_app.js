@@ -9,7 +9,6 @@ import translations from "@shopify/polaris/locales/en.json";
 
 import { userLoggedInFetch } from "../api/auth";
 import { FetchProvider } from "../context/fetch";
-import Script from "next/script";
 
 function MyProvider(props) {
   const app = useAppBridge();
@@ -47,11 +46,11 @@ class MyApp extends App {
         >
           <MyProvider Component={Component} {...pageProps} />
         </Provider>
-        <script
+        {/* <script
           defer
           data-domain="89d5-176-98-30-187.ngrok.io"
           src="http://localhost:8000/js/plausible.js"
-        ></script>
+        ></script> */}
         {/* <Script>
           {`if(!sessionStorage.getItem("_swa")&&document.referrer.indexOf(location.protocol+"//"+location.host)!==
           0)

@@ -1,4 +1,4 @@
-const { parsed: localEnv } = require("dotenv").config();
+// const { parsed: localEnv } = require("dotenv").config();
 
 const webpack = require("webpack");
 const apiKey = JSON.stringify(process.env.SHOPIFY_API_KEY);
