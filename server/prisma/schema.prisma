@@ -1,0 +1,34 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model StoreUser {
+  id            String  @id @default(uuid())
+  email         String
+  emailVerified Boolean @default(false)
+  firstName     String?
+  lastName      String?
+  locale        String?
+  accountOwner  Boolean @default(false)
+  collaborator  Boolean @default(false)
+  storeShop     String
+  store         Store   @relation(fields: [storeShop], references: [shop])
+}
+
+model Store {
+  shop                       String      @id @unique
+  createdAt                  DateTime    @default(now())
+  updatedAt                  DateTime    @updatedAt
+  enabled                    Boolean     @default(false)
+  analyticsAccountCreated    Boolean     @default(false)
+  changeStateEventGoalAdded  Boolean     @default(false)
+  outboundLinkEventGoalAdded Boolean     @default(false)
+  analyticsDashboardUrl      String?
+  scope                      String
+  storeUsers                 StoreUser[]
+}

@@ -1,10 +1,25 @@
 import { useEffect, useRef } from "react";
+import { IWidgetOptions, PREVIEW_WIDGET_JS_SRC } from "../types";
 
-export default function Preview({ type, position, collapsedByDefault }) {
-  const ref = useRef();
+const sliderDisabledPersistenceStorageKey = "huww-slider-disabled-persistence";
+
+export default function Preview({
+  type,
+  position,
+  layout,
+  domain,
+}: IWidgetOptions) {
+  const ref = useRef<HTMLIFrameElement | null>(null);
   useEffect(() => {
     if (ref.current) {
       const doc = ref.current.contentDocument;
+      ref.current.contentWindow?.localStorage.setItem(
+        sliderDisabledPersistenceStorageKey,
+        "true"
+      );
+      if (!doc) {
+        return;
+      }
       doc.body.innerHTML = "";
       doc.body.style.margin = "0";
       // conatiner
@@ -47,18 +62,19 @@ export default function Preview({ type, position, collapsedByDefault }) {
       script.setAttribute("id", "help-ukraine-win");
       script.setAttribute(
         "src",
-        `https://helpukrainewinwidget.org/cdn/widget.js?type=${encodeURIComponent(
+        `${PREVIEW_WIDGET_JS_SRC}?type=${encodeURIComponent(
           type
-        )}&position=${encodeURIComponent(
-          position
-        )}&collapsed=${encodeURIComponent(collapsedByDefault)}`
+        )}&position=${encodeURIComponent(position)}&layout=${encodeURIComponent(
+          layout
+        )}&domain=${encodeURIComponent(domain)}`
       );
       script.setAttribute("data-type", type);
       script.setAttribute("data-position", position);
-      script.setAttribute("data-collapsed", collapsedByDefault);
+      script.setAttribute("data-layout", layout);
+      script.setAttribute("data-domain", domain);
       doc.body.appendChild(script);
     }
-  }, [type, position, collapsedByDefault]);
+  }, [type, position, layout]);
   return (
     <iframe
       key={`${type}/${position}`}
