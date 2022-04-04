@@ -11,7 +11,9 @@ export async function createStore(
     prisma.store.create({
       data,
     }),
-    ...(userStore && [createUserStore({ ...userStore, storeShop: data.shop })]),
+    ...(userStore
+      ? [createUserStore({ ...userStore, storeShop: data.shop })]
+      : []),
   ]);
   return results[0];
 }

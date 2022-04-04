@@ -17,7 +17,7 @@ import { setupSite } from "./api/analytics";
 import { Store } from "@prisma/client";
 
 dotenv.config();
-const port = parseInt(process.env.PORT, 10) || 8081;
+const port = parseInt(process.env.PORT || "", 10) || 8081;
 const dev = process.env.NODE_ENV !== "production";
 const app = next({
   dev,
@@ -26,10 +26,10 @@ const handle = app.getRequestHandler();
 
 // console.log("ENVS >> ", JSON.stringify(process.env, null, 2));
 Shopify.Context.initialize({
-  API_KEY: process.env.SHOPIFY_API_KEY,
-  API_SECRET_KEY: process.env.SHOPIFY_API_SECRET,
-  SCOPES: process.env.SCOPES.split(","),
-  HOST_NAME: process.env.HOST.replace(/https:\/\/|\/$/g, ""),
+  API_KEY: process.env.SHOPIFY_API_KEY || "",
+  API_SECRET_KEY: process.env.SHOPIFY_API_SECRET || "",
+  SCOPES: (process.env.SCOPES || "").split(","),
+  HOST_NAME: (process.env.HOST || "").replace(/https:\/\/|\/$/g, ""),
   API_VERSION: ApiVersion.October20,
   IS_EMBEDDED_APP: true,
   // This should be replaced with your preferred storage strategy
@@ -65,7 +65,7 @@ app.prepare().then(async () => {
             {
               shop,
               enabled: true,
-              scope,
+              scope: scope || "",
             },
             onlineAccessInfo?.associated_user && {
               accountOwner: onlineAccessInfo.associated_user.account_owner,
@@ -89,7 +89,7 @@ app.prepare().then(async () => {
 
         const responses = await Shopify.Webhooks.Registry.register({
           shop,
-          accessToken,
+          accessToken: accessToken || "",
           path: "/webhooks",
           topic: "APP_UNINSTALLED",
         });
@@ -108,7 +108,9 @@ app.prepare().then(async () => {
     })
   );
 
-  const handleRequest = async (ctx) => {
+  const handleRequest = async (
+    ctx: Koa.ParameterizedContext<any, Router.IRouterParamContext<any, {}>>
+  ) => {
     await handle(ctx.req, ctx.res);
     ctx.respond = false;
     ctx.res.statusCode = 200;
@@ -136,7 +138,7 @@ app.prepare().then(async () => {
     // verifyRequest({ returnHeader: true }),
     async (ctx) => {
       console.log("GET /analytics", ctx);
-      const shop = ctx.query.shop;
+      const shop = ctx.query.shop as string;
       const store = await getStore(shop);
       console.log("> store", store);
       if (!store || !store.enabled) {
@@ -153,7 +155,7 @@ app.prepare().then(async () => {
     // verifyRequest({ returnHeader: true }),
     async (ctx) => {
       console.log("GET /analytics", ctx);
-      const shop = ctx.query.shop;
+      const shop = ctx.query.shop as string;
       const store = await getStore(shop);
       console.log("> store", store);
       if (!store || !store.enabled) {
@@ -169,7 +171,7 @@ app.prepare().then(async () => {
   router.get("(/_next/static/.*)", handleRequest); // Static content is clear
   router.get("/_next/webpack-hmr", handleRequest); // Webpack content is clear
   router.get("(.*)", async (ctx) => {
-    const shop = ctx.query.shop;
+    const shop = ctx.query.shop as string;
     const store = await getStore(shop);
 
     // This shop hasn't been seen yet, go through OAuth to create a session

@@ -9,7 +9,6 @@ import translations from "@shopify/polaris/locales/en.json";
 
 import { userLoggedInFetch } from "../api/auth";
 import { FetchProvider } from "../context/fetch";
-import { useRouter } from "next/router";
 
 function MyProvider(props: { Component: React.JSXElementConstructor<any> }) {
   const app = useAppBridge();

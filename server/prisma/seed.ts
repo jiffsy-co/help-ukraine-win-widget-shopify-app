@@ -1,16 +1,8 @@
-import { PrismaClient } from '@prisma/client';
-
+import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-async function main() {
-  await prisma.user.create({
-    data: {
-      email: `admin@jiffsy.co`,
-      emailVerified: true
-    },
-  });
-}
+async function main() {}
 
 main()
   .catch((e) => {

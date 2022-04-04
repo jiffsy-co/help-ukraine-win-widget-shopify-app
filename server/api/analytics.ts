@@ -39,8 +39,8 @@ export async function createGoals(domain: string) {
 }
 
 export function createEventGoal(
-  domain,
-  eventName
+  domain: string,
+  eventName: string
 ): Promise<
   | {
       domain: string;
@@ -68,7 +68,7 @@ export function createEventGoal(
 }
 
 export function createSharedLink(
-  domain
+  domain: string
 ): Promise<
   | {
       name: string;

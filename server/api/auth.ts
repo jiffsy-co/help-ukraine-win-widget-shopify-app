@@ -1,7 +1,10 @@
+import { ClientApplication } from "@shopify/app-bridge";
 import { authenticatedFetch } from "@shopify/app-bridge-utils";
 import { Redirect } from "@shopify/app-bridge/actions";
 
-export function userLoggedInFetch(app) {
+export function userLoggedInFetch(
+  app: ClientApplication<any>
+): (uri: RequestInfo, options?: RequestInit) => Promise<Response | null> {
   const fetchFunction = authenticatedFetch(app);
 
   return async (uri, options) => {
