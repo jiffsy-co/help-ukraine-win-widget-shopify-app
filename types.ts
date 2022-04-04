@@ -27,6 +27,8 @@ export interface IWidgetOptions {
   domain: string;
 }
 
-export const WIDGET_JS_SRC = "https://helpukrainewinwidget.org/cdn/widget.js";
+export const WIDGET_JS_SRC =
+  process.env.NEXT_PUBLIC_WIDGET_PATH ||
+  "https://helpukrainewinwidget.org/cdn/widget.js";
 // export const WIDGET_JS_SRC = "http://localhost:3000/cdn/widget.js";
-export const PREVIEW_WIDGET_JS_SRC = WIDGET_JS_SRC; // "http://localhost:3000/cdn/widget.js";
+export const PREVIEW_WIDGET_JS_SRC = process.env.NEXT_PUBLIC_PREVIEW_WIDGET_PATH || WIDGET_JS_SRC; // "http://localhost:3000/cdn/widget.js";

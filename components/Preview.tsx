@@ -13,10 +13,12 @@ export default function Preview({
   useEffect(() => {
     if (ref.current) {
       const doc = ref.current.contentDocument;
-      ref.current.contentWindow?.localStorage.setItem(
-        sliderDisabledPersistenceStorageKey,
-        "true"
-      );
+      if (ref.current.contentWindow) {
+        (ref.current
+          .contentWindow as any).__HELPUKRAINEWIDGET_DISABLE_ANALYICS = true;
+        (ref.current
+          .contentWindow as any).__HELPUKRAINEWIDGET_DISABLE_PERSISTENCE = true;
+      }
       if (!doc) {
         return;
       }
