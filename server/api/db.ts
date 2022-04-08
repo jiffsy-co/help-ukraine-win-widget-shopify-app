@@ -67,3 +67,13 @@ export function disableStore(shop: string) {
     data: { enabled: false },
   });
 }
+
+export function createGdprWebhook(shop: string, topic: string, payload: any) {
+  return prisma.gdprWebhook.create({
+    data: {
+      shopDomain: shop,
+      topic,
+      payload,
+    },
+  });
+}

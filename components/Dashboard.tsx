@@ -18,14 +18,13 @@ export default function Dashbaord() {
   const fetch = useFetch();
   const fetcher = useCallback<(url: string) => Promise<{ sharedLink: string }>>(
     (url: string) => fetch(url).then((res) => res.json()),
-    []
+    [fetch]
   );
   const fetcherPost = useCallback<
     (url: string) => Promise<{ sharedLink: string }>
-  >(
-    (url: string) => fetch(url, { method: "post" }).then((res) => res.json()),
-    []
-  );
+  >((url: string) => fetch(url, { method: "post" }).then((res) => res.json()), [
+    fetch,
+  ]);
   const { data, error, mutate } = useSWR<{ sharedLink: string }>(
     "/analytics",
     fetcher

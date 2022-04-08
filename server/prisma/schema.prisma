@@ -21,14 +21,23 @@ model StoreUser {
 }
 
 model Store {
-  shop                       String      @id @unique
-  createdAt                  DateTime    @default(now())
-  updatedAt                  DateTime    @updatedAt
-  enabled                    Boolean     @default(false)
-  analyticsAccountCreated    Boolean     @default(false)
-  changeStateEventGoalAdded  Boolean     @default(false)
-  outboundLinkEventGoalAdded Boolean     @default(false)
+  shop                       String        @id @unique
+  createdAt                  DateTime      @default(now())
+  updatedAt                  DateTime      @updatedAt
+  enabled                    Boolean       @default(false)
+  analyticsAccountCreated    Boolean       @default(false)
+  changeStateEventGoalAdded  Boolean       @default(false)
+  outboundLinkEventGoalAdded Boolean       @default(false)
   analyticsDashboardUrl      String?
   scope                      String
   storeUsers                 StoreUser[]
+  gdprWebhooks               GdprWebhook[]
+}
+
+model GdprWebhook {
+  id         String @id @default(uuid())
+  store      Store  @relation(fields: [shopDomain], references: [shop])
+  shopDomain String
+  topic      String
+  payload    Json
 }

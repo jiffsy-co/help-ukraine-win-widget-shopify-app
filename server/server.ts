@@ -2,11 +2,13 @@ import "@babel/polyfill";
 import dotenv from "dotenv";
 import "isomorphic-fetch";
 import createShopifyAuth, { verifyRequest } from "@shopify/koa-shopify-auth";
+import { receiveWebhook } from "@shopify/koa-shopify-webhooks";
 import Shopify, { ApiVersion, SessionInterface } from "@shopify/shopify-api";
 import Koa from "koa";
 import next from "next";
 import Router from "koa-router";
 import {
+  createGdprWebhook,
   createStore,
   disableStore,
   enableStore,
@@ -168,6 +170,49 @@ app.prepare().then(async () => {
       }
     }
   );
+
+  const webhook = receiveWebhook({ secret: process.env.SHOPIFY_API_SECRET });
+
+  router.post("/webhook/gdpr/customers/data_request", webhook, async (ctx) => {
+    const data = getWebhookConfig(ctx);
+    console.log("webhook/gdpr/customers/data_request", data, ctx.request);
+    const response = await createGdprWebhook(
+      data.shop_domain,
+      data.topic,
+      data.payload
+    );
+    console.log("DB webhook/gdpr/customers/data_request", response);
+  });
+
+  router.post("/webhook/gdpr/customers/redact", webhook, async (ctx) => {
+    const data = getWebhookConfig(ctx);
+    console.log("webhook/gdpr/customers/redact", data, ctx.request);
+    const response = await createGdprWebhook(
+      data.shop_domain,
+      data.topic,
+      data.payload
+    );
+    console.log("DB webhook/gdpr/customers/redact", response);
+  });
+
+  router.post("/webhook/gdpr/shop/redact", webhook, async (ctx) => {
+    const data = getWebhookConfig(ctx);
+    console.log("webhook/gdpr/shop/redact", data, ctx.request);
+    const response = await createGdprWebhook(
+      data.shop_domain,
+      data.topic,
+      data.payload
+    );
+    console.log("DB webhook/gdpr/shop/redact", response);
+  });
+
+  function getWebhookConfig(ctx: any) {
+    const shop_domain = ctx.state.webhook.domain;
+    const topic = ctx.state.webhook.topic;
+    const payload = ctx.state.webhook.payload;
+    return { shop_domain, topic, payload };
+  }
+
   router.get("(/_next/static/.*)", handleRequest); // Static content is clear
   router.get("/_next/webpack-hmr", handleRequest); // Webpack content is clear
   router.get("(.*)", async (ctx) => {

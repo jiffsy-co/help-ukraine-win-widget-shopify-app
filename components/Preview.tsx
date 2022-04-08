@@ -76,7 +76,7 @@ export default function Preview({
       script.setAttribute("data-domain", domain);
       doc.body.appendChild(script);
     }
-  }, [type, position, layout]);
+  }, [type, position, layout, domain]);
   return (
     <iframe
       key={`${type}/${position}`}
