@@ -61,6 +61,12 @@ app.prepare().then(async () => {
         const { shop, accessToken, scope, onlineAccessInfo } = ctx.state
           .shopify as SessionInterface;
         const host = ctx.query.host;
+        ctx.set(
+          "Content-Security-Policy",
+          `frame-ancestors ${
+            shop ? "https://" + shop : "*.myshopify.com"
+          } https://admin.shopify.com`
+        );
         const store =
           (await getStore(shop)) ||
           (await createStore(
@@ -114,10 +120,6 @@ app.prepare().then(async () => {
     ctx: Koa.ParameterizedContext<any, Router.IRouterParamContext<any, {}>>
   ) => {
     await handle(ctx.req, ctx.res);
-    ctx.set(
-      "Content-Security-Policy",
-      `frame-ancestors https://${ctx.state.shop} https://admin.shopify.com`
-    );
     ctx.respond = false;
     ctx.res.statusCode = 200;
   };
@@ -224,6 +226,13 @@ app.prepare().then(async () => {
   router.get("(.*)", async (ctx) => {
     const shop = ctx.query.shop as string;
     const store = await getStore(shop);
+
+    ctx.set(
+      "Content-Security-Policy",
+      `frame-ancestors ${
+        shop ? "https://" + shop : "*.myshopify.com"
+      } https://admin.shopify.com`
+    );
 
     // This shop hasn't been seen yet, go through OAuth to create a session
     if (!store || !store.enabled) {
