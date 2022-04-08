@@ -173,7 +173,7 @@ app.prepare().then(async () => {
 
   const webhook = receiveWebhook({ secret: process.env.SHOPIFY_API_SECRET || '' });
 
-  router.use("/webhook/gdpr/customers/data_request", webhook, async (ctx) => {
+  router.post("/webhook/gdpr/customers/data_request", webhook, async (ctx) => {
     const data = getWebhookConfig(ctx);
     console.log("webhook/gdpr/customers/data_request", data, ctx.request);
     const response = await createGdprWebhook(
@@ -184,7 +184,7 @@ app.prepare().then(async () => {
     console.log("DB webhook/gdpr/customers/data_request", response);
   });
 
-  router.use("/webhook/gdpr/customers/redact", webhook, async (ctx) => {
+  router.post("/webhook/gdpr/customers/redact", webhook, async (ctx) => {
     const data = getWebhookConfig(ctx);
     console.log("webhook/gdpr/customers/redact", data, ctx.request);
     const response = await createGdprWebhook(
@@ -195,7 +195,7 @@ app.prepare().then(async () => {
     console.log("DB webhook/gdpr/customers/redact", response);
   });
 
-  router.use("/webhook/gdpr/shop/redact", webhook, async (ctx) => {
+  router.post("/webhook/gdpr/shop/redact", webhook, async (ctx) => {
     const data = getWebhookConfig(ctx);
     console.log("webhook/gdpr/shop/redact", data, ctx.request);
     const response = await createGdprWebhook(
