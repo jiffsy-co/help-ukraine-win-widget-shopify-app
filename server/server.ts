@@ -114,6 +114,10 @@ app.prepare().then(async () => {
     ctx: Koa.ParameterizedContext<any, Router.IRouterParamContext<any, {}>>
   ) => {
     await handle(ctx.req, ctx.res);
+    ctx.set(
+      "Content-Security-Policy",
+      `frame-ancestors https://${ctx.state.shop} https://admin.shopify.com`
+    );
     ctx.respond = false;
     ctx.res.statusCode = 200;
   };
@@ -171,7 +175,9 @@ app.prepare().then(async () => {
     }
   );
 
-  const webhook = receiveWebhook({ secret: process.env.SHOPIFY_API_SECRET || '' });
+  const webhook = receiveWebhook({
+    secret: process.env.SHOPIFY_API_SECRET || "",
+  });
 
   router.post("/webhook/gdpr/customers/data_request", webhook, async (ctx) => {
     const data = getWebhookConfig(ctx);
