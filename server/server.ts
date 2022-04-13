@@ -143,10 +143,12 @@ app.prepare().then(async () => {
 
   router.get(
     "/analytics",
-    // verifyRequest({ returnHeader: true }),
+    verifyRequest({ returnHeader: true }),
     async (ctx) => {
       console.log("GET /analytics", ctx);
-      const shop = ctx.query.shop as string;
+      const session = await Shopify.Utils.loadCurrentSession(ctx.req, ctx.res);
+      const shop = session.shop;
+      console.log("> shop", shop);
       const store = await getStore(shop);
       console.log("> store", store);
       if (!store || !store.enabled) {
@@ -160,10 +162,12 @@ app.prepare().then(async () => {
   );
   router.post(
     "/setup-analytics",
-    // verifyRequest({ returnHeader: true }),
+    verifyRequest({ returnHeader: true }),
     async (ctx) => {
       console.log("GET /analytics", ctx);
-      const shop = ctx.query.shop as string;
+      const session = await Shopify.Utils.loadCurrentSession(ctx.req, ctx.res);
+      const shop = session.shop;
+      console.log("> shop", shop);
       const store = await getStore(shop);
       console.log("> store", store);
       if (!store || !store.enabled) {
@@ -226,7 +230,6 @@ app.prepare().then(async () => {
   router.get("(.*)", async (ctx) => {
     const shop = ctx.query.shop as string;
     const store = await getStore(shop);
-
     ctx.set(
       "Content-Security-Policy",
       `frame-ancestors ${

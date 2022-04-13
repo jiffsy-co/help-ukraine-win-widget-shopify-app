@@ -49,7 +49,9 @@ export function createUserStore(
 export function getStore(shop: string) {
   return prisma.store.findFirst({
     where: {
-      shop,
+      shop: {
+        equals: shop,
+      },
     },
   });
 }
