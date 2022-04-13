@@ -147,16 +147,20 @@ app.prepare().then(async () => {
     async (ctx) => {
       console.log("GET /analytics", ctx);
       const session = await Shopify.Utils.loadCurrentSession(ctx.req, ctx.res);
-      const shop = session.shop;
-      console.log("> shop", shop);
-      const store = await getStore(shop);
-      console.log("> store", store);
-      if (!store || !store.enabled) {
-        ctx.redirect(`/auth?shop=${shop}`);
+      if (!session) {
+        ctx.redirect(`/auth`);
       } else {
-        ctx.body = {
-          sharedLink: store.analyticsDashboardUrl,
-        };
+        const shop = session.shop;
+        console.log("> shop", shop);
+        const store = await getStore(shop);
+        console.log("> store", store);
+        if (!store || !store.enabled) {
+          ctx.redirect(`/auth?shop=${shop}`);
+        } else {
+          ctx.body = {
+            sharedLink: store.analyticsDashboardUrl,
+          };
+        }
       }
     }
   );
@@ -166,17 +170,21 @@ app.prepare().then(async () => {
     async (ctx) => {
       console.log("GET /analytics", ctx);
       const session = await Shopify.Utils.loadCurrentSession(ctx.req, ctx.res);
-      const shop = session.shop;
-      console.log("> shop", shop);
-      const store = await getStore(shop);
-      console.log("> store", store);
-      if (!store || !store.enabled) {
-        ctx.redirect(`/auth?shop=${shop}`);
+      if (!session) {
+        ctx.redirect(`/auth`);
       } else {
-        const updateStore = await setupDashboard(store);
-        ctx.body = {
-          sharedLink: updateStore.analyticsDashboardUrl,
-        };
+        const shop = session.shop;
+        console.log("> shop", shop);
+        const store = await getStore(shop);
+        console.log("> store", store);
+        if (!store || !store.enabled) {
+          ctx.redirect(`/auth?shop=${shop}`);
+        } else {
+          const updateStore = await setupDashboard(store);
+          ctx.body = {
+            sharedLink: updateStore.analyticsDashboardUrl,
+          };
+        }
       }
     }
   );
