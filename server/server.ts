@@ -210,37 +210,43 @@ app.prepare().then(async () => {
     verifyRequest({ returnHeader: true }),
     async (ctx) => {
       const session = await Shopify.Utils.loadCurrentSession(ctx.req, ctx.res);
-      const clients = {
-        rest: new Shopify.Clients.Rest(session.shop, session.accessToken),
-      };
+      if (session) {
+        const clients = {
+          rest: new Shopify.Clients.Rest(session.shop, session.accessToken),
+        };
 
-      // Use `client.get` to request list of themes on store
-      const themesResponse = await clients.rest.get({
-        path: "themes",
-      });
+        // Use `client.get` to request list of themes on store
+        const themesResponse = await clients.rest.get({
+          path: "themes",
+        });
 
-      const {
-        body: { themes },
-      } = themesResponse as any;
+        const {
+          body: { themes },
+        } = themesResponse as any;
 
-      // Find the published theme
-      const publishedTheme = themes.find((theme) => theme.role === "main");
+        // Find the published theme
+        const publishedTheme = (themes as { role: string; id: string }[]).find(
+          (theme) => theme.role === "main"
+        );
 
-      /**
-       * Fetch one published product that's later used to build the editor preview url
-       */
-      // https://huww-test.myshopify.com/admin/themes/122874396787/editor?context=apps&appEmbed=a11b9199-a570-41b4-8157-b6487ccabb82%2Fapp-embed
-      const editorUrl = `https://${session.shop}/admin/themes/${
-        publishedTheme.id
-      }/editor?context=apps&appEmbed=${encodeURIComponent(
-        `${process.env.THEME_EXTENSION_UUID}/widget`
-      )}&activateAppId=${process.env.THEME_EXTENSION_UUID}/widget`;
+        /**
+         * Fetch one published product that's later used to build the editor preview url
+         */
+        // https://huww-test.myshopify.com/admin/themes/122874396787/editor?context=apps&appEmbed=a11b9199-a570-41b4-8157-b6487ccabb82%2Fapp-embed
+        const editorUrl = `https://${session.shop}/admin/themes/${
+          publishedTheme?.id
+        }/editor?context=apps&appEmbed=${encodeURIComponent(
+          `${process.env.THEME_EXTENSION_UUID}/widget`
+        )}&activateAppId=${process.env.THEME_EXTENSION_UUID}/widget`;
 
-      ctx.body = {
-        theme: publishedTheme,
-        editorUrl,
-      };
-      ctx.res.statusCode = 200;
+        ctx.body = {
+          theme: publishedTheme,
+          editorUrl,
+        };
+        ctx.res.statusCode = 200;
+      } else {
+        ctx.redirect(`/auth`);
+      }
     }
   );
 
