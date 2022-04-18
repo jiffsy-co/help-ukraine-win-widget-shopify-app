@@ -61,6 +61,20 @@ app.prepare().then(async () => {
         const { shop, accessToken, scope, onlineAccessInfo } = ctx.state
           .shopify as SessionInterface;
         const host = ctx.query.host;
+        const client = new Shopify.Clients.Graphql(shop, accessToken);
+        const shopInfo = await client.query({
+          data: `{
+            shop {
+              name
+              email
+              contactEmail
+              url
+            }
+          }`,
+        });
+        console.log(">>>> shopInfo <<<<", JSON.stringify(shopInfo, null, 2));
+        const email = (shopInfo.body as any).data.shop.email;
+        const contactEmail = (shopInfo.body as any).data.shop.contactEmail;
         ctx.set(
           "Content-Security-Policy",
           `frame-ancestors ${
@@ -74,6 +88,8 @@ app.prepare().then(async () => {
               shop,
               enabled: true,
               scope: scope || "",
+              email,
+              contactEmail,
             },
             onlineAccessInfo?.associated_user && {
               accountOwner: onlineAccessInfo.associated_user.account_owner,
@@ -186,6 +202,45 @@ app.prepare().then(async () => {
           };
         }
       }
+    }
+  );
+
+  router.get(
+    "/api/store/themes/main",
+    verifyRequest({ returnHeader: true }),
+    async (ctx) => {
+      const session = await Shopify.Utils.loadCurrentSession(ctx.req, ctx.res);
+      const clients = {
+        rest: new Shopify.Clients.Rest(session.shop, session.accessToken),
+      };
+
+      // Use `client.get` to request list of themes on store
+      const themesResponse = await clients.rest.get({
+        path: "themes",
+      });
+
+      const {
+        body: { themes },
+      } = themesResponse as any;
+
+      // Find the published theme
+      const publishedTheme = themes.find((theme) => theme.role === "main");
+
+      /**
+       * Fetch one published product that's later used to build the editor preview url
+       */
+      // https://huww-test.myshopify.com/admin/themes/122874396787/editor?context=apps&appEmbed=a11b9199-a570-41b4-8157-b6487ccabb82%2Fapp-embed
+      const editorUrl = `https://${session.shop}/admin/themes/${
+        publishedTheme.id
+      }/editor?context=apps&appEmbed=${encodeURIComponent(
+        `${process.env.THEME_EXTENSION_UUID}/widget`
+      )}&activateAppId=${process.env.THEME_EXTENSION_UUID}/widget`;
+
+      ctx.body = {
+        theme: publishedTheme,
+        editorUrl,
+      };
+      ctx.res.statusCode = 200;
     }
   );
 

@@ -8,6 +8,7 @@ export default function Dashbaord() {
     setupLoading: boolean;
     error?: string;
   }>({ setupLoading: false });
+  const [showSpinner, setShowSpinner] = useState(true);
   const [active, setActive] = useState(false);
   const toggleActive = useCallback(() => setActive((active) => !active), []);
   const toastMarkup =
@@ -29,12 +30,13 @@ export default function Dashbaord() {
     "/analytics",
     fetcher
   );
-  const isLoading = !data && !error;
+  const isLoading = !data;
   const ref = useRef<HTMLIFrameElement | null>(null);
   if (isLoading) {
     return (
       <div
         style={{
+          height: 300,
           width: "100%",
           display: "flex",
           alignItems: "center",
@@ -47,19 +49,45 @@ export default function Dashbaord() {
   }
   if (data?.sharedLink) {
     return (
-      <iframe
-        ref={ref}
-        plausible-embed="true"
-        src={`${data.sharedLink}&embed=true&theme=light&background=%23f6f6f7`}
-        scrolling="yes"
-        frameBorder="0"
-        loading="lazy"
-        style={{
-          width: 1,
-          minWidth: "100%",
-          height: 2500,
-        }}
-      ></iframe>
+      <div style={{ position: "relative" }}>
+        {showSpinner && (
+          <div
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              height: 300,
+              width: "100%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              zIndex: 1,
+            }}
+          >
+            <Spinner size="large" />
+          </div>
+        )}
+        <iframe
+          onLoad={() => {
+            setShowSpinner(false);
+          }}
+          onError={() => {
+            setShowSpinner(false);
+          }}
+          ref={ref}
+          plausible-embed="true"
+          src={`${data.sharedLink}&embed=true&theme=light&background=%23f6f6f7`}
+          scrolling="yes"
+          frameBorder="0"
+          loading="lazy"
+          style={{
+            width: 1,
+            minWidth: "100%",
+            height: 2500,
+            zIndex: 2,
+          }}
+        ></iframe>
+      </div>
     );
   }
   return (

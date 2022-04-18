@@ -1,0 +1,42 @@
+<script>
+  const isInPreview = /^\/admin\//.test(window.parent.location.pathname);
+  console.log("isInPreview", isInPreview, window.parent.location.pathname);
+  if (isInPreview) {
+    window.__HELPUKRAINEWIDGET_DISABLE_ANALYICS = true;
+    window.__HELPUKRAINEWIDGET_DISABLE_PERSISTENCE = true;
+  }
+</script>
+
+<script
+  id="help-ukraine-win"
+  async="true"
+  src="https://helpukrainewinwidget.org/cdn/widget.js?type={{
+    block.settings.type
+  }}&position={{ block.settings.position }}&layout={{
+    block.settings.layout
+  }}&domain={{ shop.domain }}"
+></script>
+
+<style>
+  .huww-widget,
+  .huww-widget * {
+    font-family: inherit !important;
+  }
+  .huww-widget .huww-button.huww-trigger {
+    cursor: default;
+  }
+</style>
+
+{% schema %} { "name": "Widget", "target": "head", "settings": [ { "type":
+"select", "id": "type", "label": "Widget variant", "options": [ { "value":
+"one", "label": "One" }, { "value": "two", "label": "Two" }, { "value": "three",
+"label": "Three" }, { "value": "four", "label": "Four" } ], "default": "one" },
+{ "type": "select", "id": "position", "label": "Position on screen", "options":
+[ { "value": "top-left", "label": "Top Left" }, { "value": "top-right", "label":
+"Top Right" }, { "value": "middle-left", "label": "Middle Left" }, { "value":
+"middle-right", "label": "Middle Right" }, { "value": "bottom-left", "label":
+"Bottom Left" }, { "value": "bottom-right", "label": "Bottom Right" } ],
+"default": "middle-right" }, { "type": "select", "id": "layout", "label":
+"Initial state", "options": [ { "value": "main", "label": "Expanded" }, {
+"value": "collapsed", "label": "Collapsed" } ], "default": "main" } ] } {%
+endschema %}

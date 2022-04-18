@@ -17,7 +17,7 @@ model StoreUser {
   accountOwner  Boolean @default(false)
   collaborator  Boolean @default(false)
   storeShop     String
-  store         Store   @relation(fields: [storeShop], references: [shop])
+  store         Store   @relation(fields: [storeShop], references: [shop], onDelete: Cascade)
 }
 
 model Store {
@@ -32,11 +32,13 @@ model Store {
   scope                      String
   storeUsers                 StoreUser[]
   gdprWebhooks               GdprWebhook[]
+  email                      String?
+  contactEmail               String?
 }
 
 model GdprWebhook {
   id         String @id @default(uuid())
-  store      Store  @relation(fields: [shopDomain], references: [shop])
+  store      Store  @relation(fields: [shopDomain], references: [shop], onDelete: Cascade)
   shopDomain String
   topic      String
   payload    Json
