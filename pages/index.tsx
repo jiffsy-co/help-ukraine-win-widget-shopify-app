@@ -8,6 +8,7 @@ import {
   MediaCard,
   VideoThumbnail,
   Button,
+  List,
 } from "@shopify/polaris";
 import { useCallback, useState } from "react";
 import useSWR from "swr";
@@ -17,10 +18,10 @@ import { useFetch } from "../context/fetch";
 
 const TABS = [
   {
-    id: "installation",
-    content: "Installation",
+    id: "widget",
+    content: "Widget",
   },
-  { id: "analytics", content: "Analytics" },
+  { id: "analytics", content: "Analytics Dashboard" },
 ];
 
 export default function Index() {
@@ -79,64 +80,46 @@ function Guide() {
   }
   return (
     <Stack vertical>
-      <Heading>Widget customisation</Heading>
+      <Heading>Instructions</Heading>
       <Stack vertical>
-        <p>{"To customize widget apearance and position on scree"}</p>
+        <List type="number">
+          <List.Item>Click the button “Open Theme Editor.”</List.Item>
+          <List.Item>
+            After opening the theme setting page, you will see Widget settings.
+          </List.Item>
+          <List.Item>
+            To enable or disable the widget, you can use the toggle switcher
+            near the app name.
+          </List.Item>
+          <List.Item>
+            Here you can choose a visual variant of the widget, position, and
+            initial state.
+          </List.Item>
+          <List.Item>
+            Don’t forget to click the Save button in the top right corner to
+            save theme settings after everything is ready.
+          </List.Item>
+        </List>
+        <p>
+          Thank you for your support! <span className="emoji">🇺🇦</span> Stand
+          With Ukraine!
+        </p>
         <Button primary url={data.editorUrl} external>
           Open Theme Editor
         </Button>
       </Stack>
-      <Heading>Instructions</Heading>
 
-      {/* <MediaCard
-        size="small"
-        title="Add Help Ukraine Widget to your theme"
-        description={`It only takes 1 minute of your time. Please, see this video instruction`}
-      > */}
-        <iframe
-          frameBorder="0"
-          scrolling="no"
-          marginHeight={0}
-          marginWidth={0}
-          width="788.54"
-          height="443"
-          src="https://www.youtube.com/embed/Q-Iw6ocVymM?autoplay=0&fs=1&iv_load_policy=3&showinfo=0&rel=0&cc_load_policy=0&start=0&end=0&origin=http://youtubeembedcode.com"
-        >
-          <div>
-            <small>
-              <a href="https://youtubeembedcode.com/nl/">
-                youtubeembedcode.com/nl/
-              </a>
-            </small>
-          </div>
-          <div>
-            <small>
-              <a href="https://casinoutansvensklicensbrite.se/">
-                https://casinoutansvensklicensbrite.se/
-              </a>
-            </small>
-          </div>
-          <div>
-            <small>
-              <a href="https://youtubeembedcode.com/de/">
-                youtubeembedcode.com/de/
-              </a>
-            </small>
-          </div>
-          <div>
-            <small>
-              <a href="https://howtoembedgooglemaps.com/">
-                https://howtoembedgooglemaps.com/
-              </a>
-            </small>
-          </div>
-        </iframe>
-        {/* <VideoThumbnail
-          onClick={() => {}}
-          videoLength={80}
-          thumbnailUrl="https://burst.shopifycdn.com/photos/business-woman-smiling-in-office.jpg?width=1850"
-        /> */}
-      {/* </MediaCard> */}
+      {/* <Heading>Video instruction</Heading>
+
+      <iframe
+        frameBorder="0"
+        scrolling="no"
+        marginHeight={0}
+        marginWidth={0}
+        width="788.54"
+        height="443"
+        src="https://www.youtube.com/embed/Q-Iw6ocVymM?autoplay=0&fs=1&iv_load_policy=3&showinfo=0&rel=0&cc_load_policy=0&start=0&end=0"
+      ></iframe> */}
     </Stack>
   );
 }
