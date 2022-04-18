@@ -4,9 +4,6 @@ import {
   Stack,
   Spinner,
   Tabs,
-  Link,
-  MediaCard,
-  VideoThumbnail,
   Button,
   List,
 } from "@shopify/polaris";
@@ -109,17 +106,32 @@ function Guide() {
         </Button>
       </Stack>
 
-      {/* <Heading>Video instruction</Heading>
+      <Heading>Video instruction</Heading>
 
-      <iframe
+      {/* <iframe
         frameBorder="0"
         scrolling="no"
         marginHeight={0}
         marginWidth={0}
         width="788.54"
         height="443"
-        src="https://www.youtube.com/embed/Q-Iw6ocVymM?autoplay=0&fs=1&iv_load_policy=3&showinfo=0&rel=0&cc_load_policy=0&start=0&end=0"
+        src="https://www.youtube.com/embed/zrVlrUOJzcM?autoplay=0&fs=1&iv_load_policy=3&showinfo=0&rel=0&cc_load_policy=0&start=0&end=0"
       ></iframe> */}
+
+      <iframe
+        style={{
+          maxWidth: "100%",
+        }}
+        width="1184"
+        height="740"
+        src="https://www.youtube.com/embed/zrVlrUOJzcM"
+        title="YouTube video player"
+        frameBorder={0}
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowFullScreen
+      ></iframe>
     </Stack>
   );
 }
+
+// https://youtu.be/zrVlrUOJzcM
