@@ -121,9 +121,10 @@ function Guide() {
       <iframe
         style={{
           maxWidth: "100%",
+          borderRadius: 8,
         }}
-        width="1184"
-        height="740"
+        width="592"
+        height="370"
         src="https://www.youtube.com/embed/zrVlrUOJzcM"
         title="YouTube video player"
         frameBorder={0}
